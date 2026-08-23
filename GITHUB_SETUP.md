@@ -68,6 +68,26 @@ git status --short --branch
 
 最後の `git status --short --branch` で `main...origin/main` と表示され、ローカルと GitHub が同期していることを確認しました。
 
+## コマンドの説明
+
+| コマンド | 説明 |
+| --- | --- |
+| `Get-Location` | 現在作業しているフォルダーの場所を表示します。 |
+| `Get-ChildItem -Force` | 隠しファイルを含めて、フォルダー内のファイル一覧を表示します。 |
+| `git --version` | インストールされている Git のバージョンを表示します。 |
+| `git init` | 現在のフォルダーを Git リポジトリとして初期化します。 |
+| `git status --short --branch` | 変更されたファイル、未登録ファイル、現在のブランチを確認します。 |
+| `git remote -v` | GitHub などの接続先（リモート）の URL を表示します。 |
+| `git add --all` | フォルダー内の変更を、次のコミットに含める対象として登録します。 |
+| `git add GITHUB_SETUP.md` | `GITHUB_SETUP.md` の変更だけを、次のコミット対象として登録します。 |
+| `git commit -m "Initial commit"` | 登録した変更を「Initial commit」という名前で履歴に保存します。 |
+| `git commit -m "Document GitHub setup"` | 作業記録を「Document GitHub setup」という名前で履歴に保存します。 |
+| `git commit -m "Explain GitHub setup steps"` | 説明の変更を「Explain GitHub setup steps」という名前で履歴に保存します。 |
+| `git commit -m "Document executed Git commands"` | 実行コマンドの記録を「Document executed Git commands」という名前で履歴に保存します。 |
+| `git branch -M main` | 現在のブランチ名を `main` に変更します。 |
+| `git push origin main` | ローカルの `main` ブランチのコミットを、`origin`（GitHub）へアップロードします。 |
+| `GitHub: Publish to GitHub` | VS Code から GitHub リポジトリを作成し、ローカルリポジトリを接続・公開します。 |
+
 ## 現在の状態
 
 - ローカルブランチ: `main`
