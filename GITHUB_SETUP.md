@@ -9,6 +9,65 @@
 - VS Code の GitHub 公開コマンドを起動しました。これは、GitHub アカウントに新しいリポジトリを作成し、ローカルの Git リポジトリと接続するための機能です。
 - GitHub リポジトリ `https://github.com/yuta2012/vscode` を作成し、ローカルの内容を push しました。push とは、ローカルのコミットを GitHub にアップロードする作業です。
 
+## 実行したコマンド
+
+### 状態の確認
+
+```powershell
+Get-Location
+Get-ChildItem -Force
+git status --short --branch
+git remote -v
+```
+
+現在のフォルダー、ファイル一覧、Git の状態、GitHub 接続先を確認しました。最初は Git リポジトリと接続先がありませんでした。
+
+### Git の利用確認と初期化
+
+```powershell
+git --version
+git init
+git status --short --branch
+```
+
+Git が利用できることを確認し、現在のフォルダーを Git リポジトリとして初期化しました。
+
+### 初回コミットの作成
+
+```powershell
+git add --all
+git commit -m "Initial commit"
+git branch -M main
+git status --short --branch
+```
+
+`hell` をステージングし、初回コミットを作成して、ブランチ名を `main` に変更しました。
+
+### GitHub への公開
+
+VS Code のコマンドとして `GitHub: Publish to GitHub` を実行しました。GitHub アカウントとリポジトリを選択して、`origin` という名前のリモート接続を作成しました。
+
+### 記録ファイルの反映と push
+
+```powershell
+git remote -v
+git add GITHUB_SETUP.md
+git commit -m "Document GitHub setup"
+git push origin main
+git status --short --branch
+```
+
+その後、説明を追加したため、次のコマンドでも更新を GitHub に反映しました。
+
+```powershell
+git add GITHUB_SETUP.md
+git commit -m "Explain GitHub setup steps"
+git push origin main
+git status --short --branch
+```
+
+最後の `git status --short --branch` で `main...origin/main` と表示され、ローカルと GitHub が同期していることを確認しました。
+
 ## 現在の状態
 
 - ローカルブランチ: `main`
