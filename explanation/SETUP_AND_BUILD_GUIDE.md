@@ -5,11 +5,9 @@
 ## 0. 完成する構成
 
 ```text
-VS Codeで編集
-  ↓
-Gitで履歴を保存
-  ↓ push
-GitHubでソースコードを管理
+VS Codeで編集・確認
+  ↓ アップロードまたはWeb編集
+GitHub Webでソースコードを管理
   ├─ Supabase: 予約データを保存
   └─ Vercel: Webアプリを公開
 ```
@@ -21,7 +19,6 @@ GitHubでソースコードを管理
 | 登録するもの | 用途 | 登録・設定場所 |
 | --- | --- | --- |
 | VS Code | コードを編集する | Microsoft公式サイトからPCへインストール |
-| Git for Windows | Gitコマンドを使う | Git公式サイトからPCへインストール |
 | Node.js LTS | Next.jsとnpmを実行する | Node.js公式サイトまたは `winget` |
 | GitHubアカウント | ソースコードを保存・共有する | GitHubでアカウント作成 |
 | GitHubリポジトリ | このアプリのコード置き場 | `yuta2012/github-setup` |
@@ -48,34 +45,7 @@ code --version
 
 `code` が認識されない場合は、VS Codeを再起動するか、インストーラーでPATH登録を有効にして再インストールします。
 
-## 3. Git for Windowsをインストール
-
-1. https://git-scm.com/download/win を開く。
-2. Git for Windowsをインストールする。
-3. PowerShellを開き直す。
-4. Gitのバージョンを確認する。
-
-```powershell
-git --version
-```
-
-GitHubでコミットに表示する名前とメールアドレスを設定します。メールアドレスはGitHubの登録メール、またはGitHubが提供する非公開メールを使います。
-
-```powershell
-git config --global user.name "GitHub表示名"
-git config --global user.email "GitHub登録メールアドレス"
-git config --global init.defaultBranch main
-```
-
-設定確認：
-
-```powershell
-git config --global --list
-git config --global user.name
-git config --global user.email
-```
-
-## 4. Node.jsをインストール
+## 3. Node.jsをインストール
 
 Node.jsのLTS版をインストールします。WindowsのPowerShellからは次のコマンドを使えます。
 
@@ -92,17 +62,17 @@ npm --version
 
 `npm` が認識されない場合は、Node.jsをインストールした後にターミナルを開き直します。必要に応じて、Node.js公式サイトからLTS版を再インストールします。
 
-## 5. GitHubアカウントとリポジトリを準備
+## 4. GitHubアカウントとWebリポジトリを準備
 
-### 5.1 GitHubアカウント
+### 4.1 GitHubアカウント
 
 1. https://github.com/ を開く。
 2. **Sign up** からアカウントを作成する。
 3. メールアドレスを確認する。
 4. 二要素認証を設定する。
-5. VS CodeでGitHubにサインインする。
+5. GitHub Webにログインする。
 
-### 5.2 既存リポジトリを使う場合
+### 4.2 既存リポジトリを使う場合
 
 このプロジェクトでは、次のGitHubリポジトリを使用します。
 
@@ -110,35 +80,22 @@ npm --version
 https://github.com/yuta2012/github-setup.git
 ```
 
-すでにローカルにある場合は、ルートへ移動して確認します。
+ブラウザーでリポジトリを確認する方法：
 
-```powershell
-Set-Location C:\Users\yutao\vscode\github-setup
-git status --short --branch
-git remote -v
-```
+1. https://github.com/yuta2012/github-setup を開く。
+2. ブランチの一覧から `github-setup` を選択する。
+3. `app`、`supabase`、`explanation` フォルダーが表示されることを確認する。
 
-次のように表示されれば、GitHubとの接続設定があります。
+### 4.3 GitHub Webで新しいリポジトリを作成する場合
 
-```text
-origin  https://github.com/yuta2012/github-setup.git
-```
+1. GitHub右上の **+** → **New repository** を選択する。
+2. Repository nameを入力する。
+3. PublicまたはPrivateを選択する。
+4. **Create repository** を押す。
 
-### 5.3 新しいフォルダーから開始する場合
+GitアプリをPCへダウンロードしなくても、GitHub Webでファイルを追加できます。
 
-既存リポジトリを使わず新規に始める場合だけ、次を実行します。
-
-```powershell
-New-Item -ItemType Directory -Path C:\Users\yutao\vscode\github-setup -Force
-Set-Location C:\Users\yutao\vscode\github-setup
-git init
-git branch -M main
-git remote add origin https://github.com/yuta2012/github-setup.git
-```
-
-すでに `.git` があるフォルダーで `git init` を繰り返す必要はありません。
-
-## 6. Next.jsアプリを作成
+## 5. Next.jsアプリを作成
 
 このリポジトリでは、アプリを `app` フォルダーに作成します。
 
@@ -168,7 +125,7 @@ npm run dev
 http://localhost:3000
 ```
 
-## 7. Supabaseプロジェクトを登録
+## 6. Supabaseプロジェクトを登録
 
 1. https://supabase.com/ を開く。
 2. GitHubアカウントでサインインする。
@@ -179,7 +136,7 @@ http://localhost:3000
 7. リージョンを選択する。
 8. **Create new project** を押す。
 
-### 7.1 予約テーブルを作成
+### 6.1 予約テーブルを作成
 
 Supabase Dashboardの **SQL Editor** を開き、次のファイルの内容を貼り付けて実行します。
 
@@ -195,7 +152,7 @@ supabase/migrations/20260906000000_create_reservations.sql
 select * from public.reservations;
 ```
 
-### 7.2 SupabaseのURLと公開キーを取得
+### 6.2 SupabaseのURLと公開キーを取得
 
 1. **Project Settings** を開く。
 2. **API** または **API Keys** を開く。
@@ -204,7 +161,7 @@ select * from public.reservations;
 
 `service_role` キーはブラウザー用アプリに入力しません。
 
-## 8. ローカルアプリへSupabaseを設定
+## 7. ローカルアプリへSupabaseを設定
 
 環境変数のサンプルをコピーします。
 
@@ -237,31 +194,31 @@ from public.reservations
 order by reservation_date, start_time;
 ```
 
-## 9. Gitに登録してGitHubへpush
+## 8. GitHub Webへファイルを登録
 
-リポジトリのルートで実行します。
+Gitアプリを使わず、GitHubのブラウザー画面からファイルを登録します。
 
-```powershell
-Set-Location C:\Users\yutao\vscode\github-setup
-git status --short --branch
-git diff --check
-git add .
-git status --short
-git commit -m "Build family car reservation app"
-git push origin github-setup
-```
+1. `https://github.com/yuta2012/github-setup` を開く。
+2. `github-setup` ブランチを選択する。
+3. **Add file** → **Upload files** を選択する。
+4. `app`、`supabase`、`explanation` のファイルを選択してアップロードする。
+5. 下部の **Commit changes** を押す。
+6. Commit messageに変更内容を入力する。
+7. **Commit directly to the `github-setup` branch** を選択する。
+8. **Commit changes** を押す。
 
-push後の確認：
+既存ファイルを編集する場合は、GitHub上でファイルを開き、鉛筆アイコンの **Edit this file** を選択します。編集後、下部の **Commit changes** を押します。
 
-```powershell
-git status --short --branch
-git remote -v
-git ls-remote --heads origin
-```
+GitHub Webで確認する項目：
 
-`git status` に変更がなく、`git ls-remote` でリモートブランチが表示されれば成功です。
+- `app/package.json` がある
+- `app/app/page.tsx` がある
+- `supabase/migrations/20260906000000_create_reservations.sql` がある
+- `.env.local` がない
 
-## 10. Vercelへ登録して公開
+`.env.local` は秘密情報を含むため、GitHub Webにもアップロードしません。
+
+## 9. Vercelへ登録して公開
 
 1. https://vercel.com/ を開く。
 2. GitHubアカウントでサインインする。
@@ -293,7 +250,7 @@ Vercel設定の確認場所：
 
 設定を変更した場合は、**Deployments → Redeploy** を実行します。環境変数の変更後は新しいデプロイが必要です。
 
-## 11. 公開後の確認
+## 10. 公開後の確認
 
 公開URLで次を確認します。
 
@@ -305,7 +262,7 @@ Vercel設定の確認場所：
 - 予約を削除できる
 - 別の端末から同じ予約が表示される
 
-## 12. トラブルシューティング
+## 11. トラブルシューティング
 
 ### `npm` が認識されない
 
@@ -328,37 +285,19 @@ Vercelの **Settings → Build and Deployment** でRoot Directoryが `app` か�
 
 SQL Editorでエラーの行を確認します。すでに一部を実行済みの場合は、同じポリシー名が存在することがあります。その場合は重複するポリシーを削除してから、SQLを分割して実行します。
 
-## 13. 更新時の基本コマンド
+## 12. GitHub Webで更新する手順
 
-```powershell
-Set-Location C:\Users\yutao\vscode\github-setup
-git switch github-setup
-git pull origin github-setup
-```
+1. GitHubで `github-setup` リポジトリを開く。
+2. 対象ファイルを開く。
+3. 鉛筆アイコンの **Edit this file** を押す。
+4. 内容を編集する。
+5. **Commit changes** を押す。
+6. `github-setup` ブランチへ直接commitするか、新しいブランチを作成する。
+7. 新しいブランチを使った場合は **Open pull request** からPull Requestを作成する。
 
-作業ブランチを作成します。
+Vercelは `github-setup` ブランチへのcommitを検知すると、自動的に再デプロイします。
 
-```powershell
-git switch -c feature/update-reservation
-```
-
-編集・確認後、commitとpushを行います。
-
-```powershell
-git add .
-git diff --cached --check
-git commit -m "Update reservation feature"
-git push --set-upstream origin feature/update-reservation
-```
-
-レビューが完了して `github-setup` にマージされた後、ローカルを更新します。
-
-```powershell
-git switch github-setup
-git pull origin github-setup
-```
-
-## 14. 重要なセキュリティ注意
+## 13. 重要なセキュリティ注意
 
 - `.env.local` をGitHubへpushしない。
 - `service_role` キーをブラウザーやVercelの公開コードに埋め込まない。
