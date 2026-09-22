@@ -36,12 +36,16 @@ const hasSupabaseConfig = Boolean(
 const supabase = hasSupabaseConfig ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 function dateKey(date: Date) {
-  return date.toISOString().slice(0, 10);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function formatDate(date: string) {
+  const [year, month, day] = date.split("-").map(Number);
   return new Intl.DateTimeFormat("ja-JP", { month: "long", day: "numeric", weekday: "short" }).format(
-    new Date(`${date}T00:00:00`),
+    new Date(year, month - 1, day),
   );
 }
 
@@ -71,7 +75,7 @@ export default function Home() {
         .order("reservation_date")
         .order("start_time");
       if (error) {
-        setMessage(`予約の読み込みに失敗しました: ${error.message}`);
+        setMessage(`予約の読み込みに失敗しました。SupabaseのURLとVercelの環境変数を確認してください。(${error.message})`);
       } else {
         setReservations((data as SupabaseReservation[]).map((reservation) => ({
           id: reservation.id,
