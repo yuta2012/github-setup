@@ -23,7 +23,7 @@ type SupabaseReservation = {
   note: string | null;
 };
 
-const people = ["お父さん", "お母さん", "太郎", "花子"];
+const people = ["お父さん", "お母さん", "兄", "弟"];
 const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
@@ -47,6 +47,10 @@ function formatDate(date: string) {
   return new Intl.DateTimeFormat("ja-JP", { month: "long", day: "numeric", weekday: "short" }).format(
     new Date(year, month - 1, day),
   );
+}
+
+function displayPerson(person: string) {
+  return person === "太郎" ? "兄" : person === "花子" ? "弟" : person;
 }
 
 export default function Home() {
@@ -79,7 +83,7 @@ export default function Home() {
       } else {
         setReservations((data as SupabaseReservation[]).map((reservation) => ({
           id: reservation.id,
-          person: reservation.person,
+          person: displayPerson(reservation.person),
           date: reservation.reservation_date,
           start: reservation.start_time.slice(0, 5),
           end: reservation.end_time.slice(0, 5),
@@ -146,7 +150,7 @@ export default function Home() {
     }
     setReservations((current) => [...current, {
       id: data.id,
-      person: data.person,
+      person: displayPerson(data.person),
       date: data.reservation_date,
       start: data.start_time.slice(0, 5),
       end: data.end_time.slice(0, 5),
@@ -190,14 +194,14 @@ export default function Home() {
             const dayReservations = reservations.filter((reservation) => reservation.date === key);
             const isCurrentMonth = date.getMonth() === month.getMonth();
             const isToday = key === dateKey(today);
-            return <button key={key} className={`day-cell ${isCurrentMonth ? "" : "muted"} ${key === selectedDate ? "selected" : ""} ${isToday ? "today" : ""}`} onClick={() => setSelectedDate(key)}><span className="date-number">{date.getDate()}</span>{dayReservations.slice(0, 2).map((reservation) => <span className={`event-chip ${reservation.person === "お母さん" ? "coral" : reservation.person === "太郎" ? "blue" : "green"}`} key={reservation.id}>{reservation.person} {reservation.start}</span>)}{dayReservations.length > 2 && <span className="more">+{dayReservations.length - 2}件</span>}</button>;
+            return <button key={key} className={`day-cell ${isCurrentMonth ? "" : "muted"} ${key === selectedDate ? "selected" : ""} ${isToday ? "today" : ""}`} onClick={() => setSelectedDate(key)}><span className="date-number">{date.getDate()}</span>{dayReservations.slice(0, 2).map((reservation) => <span className={`event-chip ${reservation.person === "お母さん" ? "coral" : reservation.person === "兄" ? "blue" : "green"}`} key={reservation.id}>{reservation.person} {reservation.start}</span>)}{dayReservations.length > 2 && <span className="more">+{dayReservations.length - 2}件</span>}</button>;
           })}</div>
-          <div className="legend"><span><i className="legend-dot coral" />お母さん</span><span><i className="legend-dot blue" />太郎</span><span><i className="legend-dot green" />お父さん</span></div>
+          <div className="legend"><span><i className="legend-dot coral" />お母さん</span><span><i className="legend-dot blue" />兄</span><span><i className="legend-dot green" />お父さん・弟</span></div>
         </section>
 
         <aside className="side-panel">
           <div className="selected-heading"><div><span className="eyebrow">SELECTED DAY</span><h3>{formatDate(selectedDate)}</h3></div><span className="count">{selectedReservations.length}件</span></div>
-          <div className="reservations">{selectedReservations.length === 0 ? <div className="empty"><span>○</span><p>この日の予約はありません</p></div> : selectedReservations.map((reservation) => <article className="reservation" key={reservation.id}><div className="reservation-time"><strong>{reservation.start}</strong><span>{reservation.end}</span></div><div className="reservation-body"><div className="reservation-top"><strong>{reservation.person}</strong><button aria-label={`${reservation.destination}の予約を削除`} onClick={() => removeReservation(reservation.id)}>×</button></div><p>{reservation.destination}</p>{reservation.note && <small>{reservation.note}</small>}</div></article>)}</div>
+          <div className="reservations">{selectedReservations.length === 0 ? <div className="empty"><span>○</span><p>この日の予約はありません</p></div> : selectedReservations.map((reservation) => <article className="reservation" key={reservation.id}><div className="reservation-time"><strong>{reservation.start}</strong><span>{reservation.end}</span></div><div className="reservation-body"><div className="reservation-top"><strong>{reservation.person}</strong><button aria-label={`${reservation.destination}の予約を削除`} onClick={() => removeReservation(reservation.id)}>削除</button></div><p>{reservation.destination}</p>{reservation.note && <small>{reservation.note}</small>}</div></article>)}</div>
 
           <form className="booking-form" onSubmit={handleSubmit}><div className="form-heading"><div><span className="eyebrow">NEW BOOKING</span><h3>予約を追加</h3></div><span className="car-icon">▱</span></div><label>使用する人<select value={person} onChange={(event) => setPerson(event.target.value)}>{people.map((name) => <option key={name}>{name}</option>)}</select></label><div className="time-fields"><label>開始<input type="time" value={start} onChange={(event) => setStart(event.target.value)} /></label><span>から</span><label>終了<input type="time" value={end} onChange={(event) => setEnd(event.target.value)} /></label></div><label>行き先<input required value={destination} onChange={(event) => setDestination(event.target.value)} placeholder="例：駅、スーパー" /></label><label>メモ <span className="optional">任意</span><input value={note} onChange={(event) => setNote(event.target.value)} placeholder="伝えておきたいこと" /></label><button className="submit-button" type="submit">予約を追加 <span>↗</span></button>{message && <p className="form-message" role="status">{message}</p>}</form>
         </aside>
